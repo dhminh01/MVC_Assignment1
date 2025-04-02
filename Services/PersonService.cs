@@ -1,5 +1,6 @@
 using MVC_Assignment1.Models;
 using MVC_Assignment1.Data;
+using OfficeOpenXml;
 
 namespace MVC_Assignment1.Services
 {
@@ -12,6 +13,7 @@ namespace MVC_Assignment1.Services
         {
             _people = DummyData.GetPeople();
         }
+
         public List<Person> GetAll()
         {
 
@@ -35,6 +37,7 @@ namespace MVC_Assignment1.Services
 
             return _people.Select(p => p.FullName).ToList();
         }
+
         public List<Person> FilterByBirthYear(string condition)
         {
 
@@ -47,5 +50,18 @@ namespace MVC_Assignment1.Services
             };
         }
 
+        public byte[] ExportToExcel()
+        {
+            using var package = new ExcelPackage();
+            var worksheet = package.Workbook.Worksheets.Add("People");
+            worksheet.Cells.LoadFromCollection(_people, true);
+            int dateColumnIndex = 6;
+            for (int row = 2; row <= _people.Count + 1; row++)
+            {
+                worksheet.Cells[row, dateColumnIndex].Style.Numberformat.Format = "yyyy-mm-dd";
+            }
+
+            return package.GetAsByteArray();
+        }
     }
 }

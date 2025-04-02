@@ -9,5 +9,6 @@ namespace MVC_Assignment1.Services
         List<Person> GetMales();
         List<string> GetFullNames();
         List<Person> FilterByBirthYear(string condition);
+        byte[] ExportToExcel();
     }
 }
